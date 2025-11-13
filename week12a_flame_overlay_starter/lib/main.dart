@@ -3,6 +3,11 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import 'game.dart';
+import 'overlay_title.dart';
+import 'overlay_main.dart';
+import 'overlay_pause.dart';
+import 'overlay_info.dart';
+import 'overlay_settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +25,28 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: GameWidget(
-          game: OverlayTutorial(context),
+          game: OverlayTutorial(context)
+            ..paused = true, // Cascade to pause immediately
+          overlayBuilderMap: {
+            'title': (context, game) {
+              return OverlayTitle(game: game);
+            },
+            'main': (context, game) {
+              return mainOverlay(context, game);
+            },
+            'pause': (context, game) {
+              return pauseOverlay(context, game);
+            },
+            'info': (context, game) {
+              return InfoOverlay(
+                game: game as OverlayTutorial,
+              ); // Cast required!
+            },
+            'settings': (context, game) {
+              return settingsOverlay(context, game);
+            },
+          },
+          initialActiveOverlays: const ['title'],
         ),
       ),
     );
